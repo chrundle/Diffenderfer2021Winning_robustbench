@@ -1,0 +1,16 @@
+{
+  "link": null,
+  "name": null,
+  "authors": null,
+  "additional_data": null,
+  "number_forward_passes": null,
+  "dataset": "cifar100",
+  "venue": null,
+  "architecture": null,
+  "eps": null,
+  "clean_acc": 0.7829,
+  "reported": null,
+  "corruptions_acc": 0.6690642105263157,
+  "autoattack_acc": null,
+  "footnote": null
+}

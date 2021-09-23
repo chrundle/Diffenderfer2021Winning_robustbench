@@ -13,6 +13,7 @@ from robustbench.model_zoo.architectures.resnext import CifarResNeXt, \
     ResNeXtBottleneck
 from robustbench.model_zoo.architectures.wide_resnet import WideResNet
 from robustbench.model_zoo.enums import ThreatModel
+from robustbench.model_zoo.architectures.CARD_resnet import LRR_ResNet
 
 
 class Hendrycks2020AugMixResNeXtNet(CifarResNeXt):
@@ -285,6 +286,43 @@ class Chen2020EfficientNet(WideResNet):
     def forward(self, x):
         x = (x - self.mu) / self.sigma
         return super().forward(x)
+
+
+class Diffenderfer2021CARD(LRR_ResNet):
+    def __init__(self, width=128):
+        super(Diffenderfer2021CARD, self).__init__(width=width)
+        self.register_buffer('mu', torch.tensor([0.491, 0.482, 0.447]).view(1, 3, 1, 1))
+        self.register_buffer('sigma', torch.tensor([0.247, 0.243, 0.262]).view(1, 3, 1, 1))
+
+    def forward(self, x):
+        x = (x - self.mu) / self.sigma
+        return super().forward(x)
+
+
+class Diffenderfer2021CARD_Deck(nn.Module):
+    def __init__(self, width=128):
+        super(Diffenderfer2021CARD_Deck, self).__init__()
+        self.num_cards = 6
+        self.models = []
+
+        for i in range(self.num_cards):
+            self.models.append(LRR_ResNet(width=width))
+
+        self.register_buffer('mu', torch.tensor([0.491, 0.482, 0.447]).view(1, 3, 1, 1))
+        self.register_buffer('sigma', torch.tensor([0.247, 0.243, 0.262]).view(1, 3, 1, 1))
+
+    def forward(self, x):
+        x = (x - self.mu) / self.sigma
+
+        x_cl = x.clone() # clone to make sure x is not changed by inplace methods
+        out_list = []
+        for i in range(self.num_cards):
+          # Evaluate model i at input
+          out = self.models[i](x_cl)
+          # Append output to list of logits
+          out_list.append(out)
+
+        return torch.mean(torch.stack(out_list),dim=0)
 
 
 linf = OrderedDict(
@@ -687,6 +725,21 @@ l2 = OrderedDict([
 
 
 common_corruptions = OrderedDict([
+    ('Diffenderfer2021Winning_LRR', {
+        'model': Diffenderfer2021CARD,
+        'gdrive_id': '15CMUVtl1TXNmOElENSBGHj4QfKXea4rz'
+    }),
+    ('Diffenderfer2021Winning_LRR_CARD_Deck', {
+        'model': Diffenderfer2021CARD_Deck,
+        'gdrive_id': [
+            '1Doa82xCEI-9tOgSvVw7dmgnbE6jRsS4o', # Augmix Rep 1
+            '15CMUVtl1TXNmOElENSBGHj4QfKXea4rz', # Augmix Rep 2
+            '1VrO1uD3sbL85FKAJRYFTMYFt4vrtb42b', # Augmix Rep 3
+            '133hpO-ff4pLP7GovRMGj_zsXmL29abiY', # Gaussian Rep 1
+            '1YL7HSDlUdrXq6R2A_DT45orxufT2_-Al', # Gaussian Rep 2
+            '1mtaiQc3TaPOjj3KEP60zml4cJg-xmMvD'  # Gaussian Rep 3
+        ],
+    }),
     ('Rebuffi2021Fixing_70_16_cutmix_extra_Linf', {
         'model': lambda: DMWideResNet(num_classes=10,
                                       depth=70,

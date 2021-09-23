@@ -1,0 +1,5 @@
+bsub -nnodes 1 -G safeml -W 60 python LRR_CARD_benchmark.py 
+bsub -nnodes 1 -G safeml -W 60 python LRR_CARD_Deck_benchmark.py 
+
+bsub -nnodes 1 -G safeml -W 60 python C100_LRR_CARD_benchmark.py 
+bsub -nnodes 1 -G safeml -W 60 python C100_LRR_CARD_Deck_benchmark.py 

@@ -143,7 +143,7 @@ def load_model(model_name: str,
 
         return model.eval()
 
-    # If we have an ensemble of models (e.g., Chen2020Adversarial)
+    # If we have an ensemble of models (e.g., Chen2020Adversarial, Diffenderfer2021Winning_LRR_CARD_Deck)
     else:
         model = models[model_name]['model']()
         if not os.path.exists(model_dir_):
@@ -163,6 +163,7 @@ def load_model(model_name: str,
                                                     model_name, state_dict,
                                                     dataset_)
             model.models[i].eval()
+            model.models[i].cuda()  # TODO: Remove this line before pushing code to robustbench
 
         return model.eval()
 
@@ -179,7 +180,8 @@ def _safe_load_state_dict(model: nn.Module, model_name: str,
         "Kireev2021Effectiveness_RLATAugMixNoJSD", "Kireev2021Effectiveness_RLATAugMixNoJSD",
         "Kireev2021Effectiveness_RLATAugMix", "Chen2020Efficient",
         "Wu2020Adversarial", "Augustin2020Adversarial_34_10",
-        "Augustin2020Adversarial_34_10_extra"
+        "Augustin2020Adversarial_34_10_extra", "Diffenderfer2021Winning_LRR",
+        "Diffenderfer2021Winning_LRR_CARD_Deck"
     }
 
     failure_messages = ['Missing key(s) in state_dict: "mu", "sigma".',
