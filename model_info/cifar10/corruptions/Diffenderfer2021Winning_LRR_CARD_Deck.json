@@ -1,16 +1,16 @@
 {
-  "link": null,
-  "name": null,
-  "authors": null,
-  "additional_data": null,
-  "number_forward_passes": null,
+  "link": "https://arxiv.org/abs/2106.09129",
+  "name": "A Winning Hand: Compressing Deep Networks Can Improve Out-Of-Distribution Robustness",
+  "authors": "James Diffenderfer, Brian R. Bartoldson, Shreya Chaganti, Jize Zhang, Bhavya Kailkhura",
+  "additional_data": false,
+  "number_forward_passes": 1,
   "dataset": "cifar10",
-  "venue": null,
-  "architecture": null,
+  "venue": "NeurIPS 2021",
+  "architecture": "WideResNet-18",
   "eps": null,
   "clean_acc": 0.9656,
   "reported": null,
-  "corruptions_acc": 0.9261013333333333,
+  "corruptions_acc": 0.92786,
   "autoattack_acc": null,
-  "footnote": null
+  "footnote": "Ensemble of networks each of which are pruned to 95% sparsity"
 }

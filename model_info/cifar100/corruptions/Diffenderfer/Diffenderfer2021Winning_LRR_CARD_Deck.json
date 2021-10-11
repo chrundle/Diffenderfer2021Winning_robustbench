@@ -10,7 +10,7 @@
   "eps": null,
   "clean_acc": 0.7993,
   "reported": null,
-  "corruptions_acc": 0.7108666666666665,
+  "corruptions_acc": 0.7150768421052631,
   "autoattack_acc": null,
   "footnote": "Ensemble of networks each of which are pruned to 95% sparsity"
 }

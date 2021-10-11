@@ -4,13 +4,13 @@
   "authors": "James Diffenderfer, Brian R. Bartoldson, Shreya Chaganti, Jize Zhang, Bhavya Kailkhura",
   "additional_data": false,
   "number_forward_passes": 1,
-  "dataset": "cifar100",
+  "dataset": "cifar10",
   "venue": "NeurIPS 2021",
   "architecture": "WideResNet-18",
   "eps": null,
-  "clean_acc": 0.7993,
+  "clean_acc": 0.9509,
   "reported": null,
-  "corruptions_acc": 0.7108666666666665,
+  "corruptions_acc": 0.90156,
   "autoattack_acc": null,
-  "footnote": "Ensemble of networks each of which are pruned to 95% sparsity"
+  "footnote": "Ensemble of binary weight networks each of which are pruned to 95% sparsity"
 }

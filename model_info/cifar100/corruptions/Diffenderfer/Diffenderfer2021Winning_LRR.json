@@ -8,9 +8,9 @@
   "venue": "NeurIPS 2021",
   "architecture": "WideResNet-18",
   "eps": null,
-  "clean_acc": 0.7993,
+  "clean_acc": 0.7829,
   "reported": null,
-  "corruptions_acc": 0.7108666666666665,
+  "corruptions_acc": 0.6690642105263157,
   "autoattack_acc": null,
-  "footnote": "Ensemble of networks each of which are pruned to 95% sparsity"
+  "footnote": "Trained with AugMix and pruned to 95% sparsity"
 }

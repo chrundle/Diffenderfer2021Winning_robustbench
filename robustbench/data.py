@@ -102,18 +102,10 @@ def load_clean_dataset(dataset: BenchmarkDataset, n_examples: Optional[int],
     return _clean_dataset_loaders[dataset](n_examples, data_dir, prepr)
 
 
-#CORRUPTIONS = ("shot_noise", "motion_blur", "snow", "pixelate",
-#               "gaussian_noise", "defocus_blur", "brightness", "fog",
-#               "zoom_blur", "frost", "glass_blur", "impulse_noise", "contrast",
-#               "jpeg_compression", "elastic_transform")
-
-C100_CORRUPTIONS = ("shot_noise", "motion_blur", "snow", "pixelate",
-                    "gaussian_noise", "defocus_blur", "brightness", "fog",
-                    "zoom_blur", "frost", "glass_blur", "impulse_noise", "contrast",
-                    "jpeg_compression", "elastic_transform", "gaussian_blur", 
-                    "saturate", "spatter", "speckle_noise")
-
-CORRUPTIONS = C100_CORRUPTIONS
+CORRUPTIONS = ("shot_noise", "motion_blur", "snow", "pixelate",
+               "gaussian_noise", "defocus_blur", "brightness", "fog",
+               "zoom_blur", "frost", "glass_blur", "impulse_noise", "contrast",
+               "jpeg_compression", "elastic_transform")
 
 ZENODO_CORRUPTIONS_LINKS: Dict[BenchmarkDataset, Tuple[str, Set[str]]] = {
     BenchmarkDataset.cifar_10: ("2535967", {"CIFAR-10-C.tar"}),

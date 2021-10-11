@@ -8,7 +8,7 @@ from robustbench.model_zoo.architectures.resnet import PreActBlock, PreActResNet
 from robustbench.model_zoo.architectures.resnext import CifarResNeXt, ResNeXtBottleneck
 from robustbench.model_zoo.architectures.wide_resnet import WideResNet
 from robustbench.model_zoo.enums import ThreatModel
-from robustbench.model_zoo.architectures.CARD_resnet import LRR_ResNet
+from robustbench.model_zoo.architectures.CARD_resnet import LRR_ResNet, WidePreActResNet
 
 
 class Chen2020EfficientNet(WideResNet):
@@ -141,6 +141,47 @@ class Diffenderfer2021CARD_Deck(torch.nn.Module):
         for i in range(self.num_cards):
           # Evaluate model i at input
           out = self.models[i](x_cl)
+          # Compute softmax
+          out = torch.softmax(out,dim=1)
+          # Append output to list of logits
+          out_list.append(out)
+
+        return torch.mean(torch.stack(out_list),dim=0)
+
+
+class Diffenderfer2021CARD_Binary(WidePreActResNet):
+    def __init__(self, num_classes=100):
+        super(Diffenderfer2021CARD_Binary, self).__init__(num_classes=num_classes)
+        self.register_buffer('mu', torch.tensor([0.5071, 0.4865, 0.4409]).view(1, 3, 1, 1))
+        self.register_buffer('sigma', torch.tensor([0.2673, 0.2564, 0.2762]).view(1, 3, 1, 1))
+
+    def forward(self, x):
+        x = (x - self.mu) / self.sigma
+        return super().forward(x)
+
+
+class Diffenderfer2021CARD_Deck_Binary(torch.nn.Module):
+    def __init__(self, num_classes=100):
+        super(Diffenderfer2021CARD_Deck_Binary, self).__init__()
+        self.num_cards = 6
+        self.models = []
+
+        for i in range(self.num_cards):
+            self.models.append(WidePreActResNet(num_classes=num_classes))
+
+        self.register_buffer('mu', torch.tensor([0.5071, 0.4865, 0.4409]).view(1, 3, 1, 1))
+        self.register_buffer('sigma', torch.tensor([0.2673, 0.2564, 0.2762]).view(1, 3, 1, 1))
+
+    def forward(self, x):
+        x = (x - self.mu) / self.sigma
+
+        x_cl = x.clone() # clone to make sure x is not changed by inplace methods
+        out_list = []
+        for i in range(self.num_cards):
+          # Evaluate model i at input
+          out = self.models[i](x_cl)
+          # Compute softmax
+          out = torch.softmax(out,dim=1)
           # Append output to list of logits
           out_list.append(out)
 
@@ -259,17 +300,32 @@ linf = OrderedDict([
 common_corruptions = OrderedDict([
     ('Diffenderfer2021Winning_LRR', {
         'model': Diffenderfer2021CARD,
-        'gdrive_id': '15CMUVtl1TXNmOElENSBGHj4QfKXea4rz'
+        'gdrive_id': '1pf87_9Tf_QRMtOuI-DSn4Gr49HcIINw3'
     }),
     ('Diffenderfer2021Winning_LRR_CARD_Deck', {
         'model': Diffenderfer2021CARD_Deck,
         'gdrive_id': [
-            '1Doa82xCEI-9tOgSvVw7dmgnbE6jRsS4o', # Augmix Rep 1
-            '15CMUVtl1TXNmOElENSBGHj4QfKXea4rz', # Augmix Rep 2
-            '1VrO1uD3sbL85FKAJRYFTMYFt4vrtb42b', # Augmix Rep 3
-            '133hpO-ff4pLP7GovRMGj_zsXmL29abiY', # Gaussian Rep 1
-            '1YL7HSDlUdrXq6R2A_DT45orxufT2_-Al', # Gaussian Rep 2
-            '1mtaiQc3TaPOjj3KEP60zml4cJg-xmMvD'  # Gaussian Rep 3
+            '1ETAorBgI_biK2G1NCi97cXld-8Uv514w',
+            '1aApumpFyA-ViB4l4doeHrg39MmhQWjRt',
+            '1N-FTOE5mxnSYY67z8mT4O8ILVLG4BVhT',
+            '1prvcAQ-znLhhwbbvo23ALNshq4F4hhoT',
+            '1MPxkBewf8-bLoIp8IcFB5HUFOx47myNL',
+            '1upaVqrHYgFGHW09bH-KUo2dbQdXdC8zy' 
+        ],
+    }),
+    ('Diffenderfer2021Winning_Binary', {
+        'model': Diffenderfer2021CARD_Binary,
+        'gdrive_id': '14y_5D16A6JGZxc_-CsLEqnzZWjeh_GmL'
+    }),
+    ('Diffenderfer2021Winning_Binary_CARD_Deck', {
+        'model': Diffenderfer2021CARD_Deck_Binary,
+        'gdrive_id': [
+            '1VfQ43ndl5KqdlV65Y8shGcWUGXgtI5Ul',
+            '19CQbvuxyHA6H6A2h9KlDmwsusbkoYKYk',
+            '1odVCTOZQKltKQKH_owYYYHVa5ATnYnmr',
+            '1d0zJCYZgfGkDkcTqtm7dKnkN1pGEAvV6',
+            '1Kwkw4M4AWjovQXXUHv0tgVdhOWpGKE4b',
+            '1qZcuYsLwBXJwG8GnV_1k3McuJllbzq8W' 
         ],
     }),
     ('Gowal2020Uncovering_Linf', {
