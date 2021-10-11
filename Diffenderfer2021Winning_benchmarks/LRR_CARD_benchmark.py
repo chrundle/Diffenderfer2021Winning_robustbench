@@ -2,12 +2,10 @@ import torch
 
 from robustbench import benchmark
 from robustbench.utils import load_model
-#from robustbench.model_zoo.cifar10 import Diffenderfer2021CARD
 
 threat_model = "corruptions"
 dataset = "cifar10"
 
-#model = Diffenderfer2021CARD()
 model_name = 'Diffenderfer2021Winning_LRR'
 model = load_model(model_name=model_name, dataset=dataset, threat_model=threat_model)
 device = torch.device("cuda:0")
